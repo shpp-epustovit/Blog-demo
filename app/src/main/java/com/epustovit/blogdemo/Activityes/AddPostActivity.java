@@ -1,13 +1,15 @@
-package com.epustovit.blogdemo;
+package com.epustovit.blogdemo.Activityes;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class PostListActivity extends AppCompatActivity {
+import com.epustovit.blogdemo.R;
+
+public class AddPostActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_post_list);
+        setContentView(R.layout.activity_add_post);
     }
 }
