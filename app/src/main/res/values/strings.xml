@@ -4,4 +4,7 @@
     <string name="create_account">Create account</string>
     <string name="password">Password</string>
     <string name="email">Email</string>
+    <string name="submit_text">Submit</string>
+    <string name="post_description">Post Description</string>
+    <string name="post_title">Post Title...</string>
 </resources>
