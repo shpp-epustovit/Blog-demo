@@ -54,6 +54,8 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
 
         imageUrl = blog.getImage();
 
+        // TODO: Use Picasso library to load image
+
 
 
     }
