@@ -19,6 +19,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class AddPostActivity extends AppCompatActivity {
     private ImageButton mPostImage;
@@ -35,6 +41,9 @@ public class AddPostActivity extends AppCompatActivity {
     // для выбора фото из галереи
     private Uri mImageUri;
     private static final int GALLERY_CODE = 1;
+    // для хранения в базе
+    private StorageReference mStorage;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +54,7 @@ public class AddPostActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
+        mStorage = FirebaseStorage.getInstance().getReference();
 
         mPostDatabase = FirebaseDatabase.getInstance().getReference().child("MBlog");
 
@@ -94,20 +104,42 @@ public class AddPostActivity extends AppCompatActivity {
         mProgress.setMessage("Posting to blog...");
         mProgress.show();
 
-        String titleVal = mPostTitle.getText().toString().trim();
-        String descVal = mPostDescription.getText().toString().trim();
+        final String titleVal = mPostTitle.getText().toString().trim();
+        final String descVal = mPostDescription.getText().toString().trim();
 
-        if (!TextUtils.isEmpty(titleVal) && !TextUtils.isEmpty(descVal)){
+        if (!TextUtils.isEmpty(titleVal) && !TextUtils.isEmpty(descVal) && mImageUri != null){
             //start the uploading...
-            Blog blog = new Blog("Title", "description", "imageUrl", "timestamp", "userId");
-
-            mPostDatabase.setValue(blog).addOnSuccessListener(new OnSuccessListener<Void>() {
+            //mImageUri.getLastPathSegment() == /image/myphoto.jpeg
+            StorageReference filepath = mStorage.child("MBlog_images").child(mImageUri.getLastPathSegment());
+            filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
-                public void onSuccess(Void aVoid) {
-                    Toast.makeText(AddPostActivity.this, "Item added", Toast.LENGTH_SHORT).show();
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+
+                    DatabaseReference newPost = mPostDatabase.push(); // create new item with unique reference
+
+                    Map<String, String> dataToSave = new HashMap<>();
+                    // save data with variables ve are create in Blog class
+                    dataToSave.put("title", titleVal);
+                    dataToSave.put("description", descVal);
+                    dataToSave.put("image",downloadUrl.toString());
+                    dataToSave.put("timestamp", String.valueOf(java.lang.System.currentTimeMillis()));
+                    dataToSave.put("userId", mUser.getUid());
+
+                    // после того как сконструировали HashMap
+                    newPost.setValue(dataToSave);
+                    /**
+                     * сделали как раньше
+                     * newPost.child("title").setValue(titleVal);
+                     * newPost.child("desc").setValue(descrVal);
+                     * newPost.child("image").setValue(downloadUrl.toString());
+                     * newPost.child("timestamp").setValue(java.lang.System.currentTimeMillis());
+                     */
+
+                    mProgress.dismiss();
                 }
             });
         }
-        mProgress.dismiss();
+
     }
 }
