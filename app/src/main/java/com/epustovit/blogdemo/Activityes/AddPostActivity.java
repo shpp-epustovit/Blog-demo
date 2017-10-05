@@ -110,7 +110,9 @@ public class AddPostActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(titleVal) && !TextUtils.isEmpty(descVal) && mImageUri != null){
             //start the uploading...
             //mImageUri.getLastPathSegment() == /image/myphoto.jpeg
-            StorageReference filepath = mStorage.child("MBlog_images").child(mImageUri.getLastPathSegment());
+            final StorageReference filepath = mStorage.child("MBlog_images")
+                    .child(mImageUri.getLastPathSegment());
+
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -137,6 +139,10 @@ public class AddPostActivity extends AppCompatActivity {
                      */
 
                     mProgress.dismiss();
+
+                    startActivity(new Intent(AddPostActivity.this, PostListActivity.class));
+                    finish();
+
                 }
             });
         }

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.epustovit.blogdemo.Model.Blog;
 import com.epustovit.blogdemo.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.Date;
 import java.util.List;
@@ -55,6 +56,10 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
         imageUrl = blog.getImage();
 
         // TODO: Use Picasso library to load image
+        // add in project structure, dependencies
+        Picasso.with(context)
+                .load(imageUrl)
+                .into(holder.image);
 
 
 
@@ -88,6 +93,9 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
                 @Override
                 public void onClick(View view) {
                     // we can go to the next activity...
+                    /**
+                     * при нажатии на картинку перейдем дальше
+                     */
                 }
             });
         }

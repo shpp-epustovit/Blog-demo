@@ -7,4 +7,6 @@
     <string name="submit_text">Submit</string>
     <string name="post_description">Post Description</string>
     <string name="post_title">Post Title...</string>
+    <string name="last_name">Last Name</string>
+    <string name="first_name">First Name</string>
 </resources>
